@@ -9,4 +9,4 @@ A smol Spring project with ordered hashes!!!
 
 ## What's next
 
-Might dockerize this a bit... Init script for DB???
+Might dockerize this a bit... 

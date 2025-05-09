@@ -27,10 +27,10 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByUsername(username);
     }
 
-    public void saveUser(User user) {
-        String hashedPassword = Hashing.sha256().hashString(user.getPassword(), StandardCharsets.UTF_8).toString();
+    public void saveUser(String username, String password) {
+        String hashedPassword = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
         User newUser = new User();
-        newUser.setUsername(user.getUsername());
+        newUser.setUsername(username);
         newUser.setPassword(hashedPassword);
         userRepository.save(newUser);
     }

@@ -77,7 +77,7 @@ public class WebController {
             return "register";
         }
 
-        userService.saveUser(new User(registrationForm.getUsername(), registrationForm.getPassword()));
+        userService.saveUser(registrationForm.getUsername(), registrationForm.getPassword());
         model.addAttribute("registered", true);
         return "register";
     }
