@@ -118,9 +118,13 @@ public class WebController {
                 users = new ArrayList<>();
             }
 
+            if (!direction.equals("asc") && !direction.equals("desc")) {
+                users = new ArrayList<>();
+            }
+
             Comparator<User> comparator = switch (attribute.toLowerCase()) {
                 case "username" ->
-                        Comparator.comparing(User::getUsername, Comparator.nullsFirst(String::compareToIgnoreCase));
+                        Comparator.comparing(User::getUsername, Comparator.nullsFirst(String::compareToIgnoreCase)); // this default lol
                 case "password" ->
                         Comparator.comparing(User::getPassword, Comparator.nullsFirst(String::compareToIgnoreCase));
                 default -> Comparator.comparing(User::getUsername, Comparator.nullsFirst(String::compareToIgnoreCase));

@@ -10,7 +10,7 @@ public class RegistrationForm {
     private String username;
 
     @Size(min = 8, max = 64)
-    private String password;
+    private String password; // no confirmation!!!!
 
     public String getPassword() {
         return password;

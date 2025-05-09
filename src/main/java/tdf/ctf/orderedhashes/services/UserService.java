@@ -23,7 +23,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-
     public boolean checkExists(String username) {
         return userRepository.existsByUsername(username);
     }
@@ -35,8 +34,6 @@ public class UserService implements UserDetailsService {
         newUser.setPassword(hashedPassword);
         userRepository.save(newUser);
     }
-
-
 
     public ArrayList<User> getUsers() {
         return userRepository.findAll();
