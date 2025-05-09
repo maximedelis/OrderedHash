@@ -14,10 +14,15 @@
 <body>
 <div class="container">
   <div class="content">
-    <div th:switch="${registered}">
-      <p th:case="true">Account created. <br/>
-        You can now <a th:href="@{/login}">login</a>
-      <form class="form-signin" th:case="*" action="#" th:action="@{/register}" th:object="${registrationForm}"
+
+    <div th:if="${registered}">
+      <h3>Congrats, you're registered!</h3>
+
+      <p>Please <a href="/login">log in</a>!</p>
+    </div>
+
+    <div th:unless="${registered}">
+      <form class="form-signin" action="#" th:action="@{/register}" th:object="${registrationForm}"
             method="POST">
         <h2 class="form-signin-heading">Please register</h2>
         <p>
@@ -36,6 +41,7 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
       </form>
     </div>
+
   </div>
 </div>
 </body>

@@ -14,28 +14,27 @@
 <body>
 <div class="container">
     <div class="content">
-        <div th:switch="${authenticated}">
-            <p th:case="true">You're logged in. <br/>
-                You can now go to the <a th:href="@{/}">home page</a>.
-            <form class="form-signin" th:case="*" action="#" th:action="@{/login}" th:object="${loginForm}"
-                  method="POST">
-                <h2 class="form-signin-heading">Please log in</h2>
-                <p>
-                    <label for="username" class="sr-only">Username</label>
-                    <input th:field="*{username}" type="text" id="username" name="username" class="form-control" placeholder="Username" required
-                           autofocus>
-                    <a th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</a>
-                </p>
-                <p>
-                    <label for="password" class="sr-only">Password</label>
-                    <input th:field="*{password}" type="password" id="password" name="password" class="form-control" placeholder="Password"
-                           required>
-                    <a th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</a>
 
-                </p>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-            </form>
-        </div>
+        <form class="form-signin" action="#" th:action="@{/login}" th:object="${loginForm}"
+              method="POST">
+            <h2 class="form-signin-heading">Please log in</h2>
+            <p>
+                <label for="username" class="sr-only">Username</label>
+                <input th:field="*{username}" type="text" id="username" name="username" class="form-control" placeholder="Username" required
+                       autofocus>
+                <a th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</a>
+            </p>
+            <p>
+                <label for="password" class="sr-only">Password</label>
+                <input th:field="*{password}" type="password" id="password" name="password" class="form-control" placeholder="Password"
+                       required>
+                <a th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</a>
+
+            </p>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            <a th:if="${errorMessage}"  th:text="${errorMessage}">Error</a>
+        </form>
+
     </div>
 </div>
 </body>

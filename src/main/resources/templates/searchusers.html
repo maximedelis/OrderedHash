@@ -7,15 +7,6 @@
 </head>
 <body>
 
-<div th:unless="${authenticated}">
-  <h2>Welcome to my <b>secured</b> website!</h2>
-  <h3>Login or Signup to get started!</h3>
-  <a href="/login">Login</a>
-  </br>
-  <a href="/register">Signup</a>
-</div>
-
-<div th:if="${authenticated}">
   <h3>Ordered list of our users...</h3>
 
   <div th:if="${ not#lists.isEmpty(users)}">
@@ -28,6 +19,6 @@
       </tr>
     </table>
   </div>
-</div>
+
 </body>
 </html>

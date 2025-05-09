@@ -13,6 +13,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,12 +35,10 @@ public class WebController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
 
-    public WebController(UserService userService, AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public WebController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
@@ -48,7 +47,6 @@ public class WebController {
 
         if ((authentication.getPrincipal() instanceof User)) {
             model.addAttribute("authenticated", true);
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
         } else {
             model.addAttribute("authenticated", false);
         }
@@ -57,6 +55,12 @@ public class WebController {
 
     @GetMapping("/register")
     public String register(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if ((authentication.getPrincipal() instanceof User)) {
+            return "redirect:/";
+        }
+
         model.addAttribute("registrationForm", new RegistrationForm());
         return "register";
     }
@@ -82,7 +86,7 @@ public class WebController {
     public String login(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof User) {
-            model.addAttribute("authenticated", true);
+            return "redirect:/";
         }
         model.addAttribute("loginForm", new LoginForm());
         return "login";
@@ -94,16 +98,21 @@ public class WebController {
             return "login";
         }
         String hashedPassword = Hashing.sha256().hashString(loginForm.getPassword(), StandardCharsets.UTF_8).toString();
-        Authentication authentication = authenticationManager
+        try {
+            Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginForm.getUsername(), hashedPassword));
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authentication);
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
-        model.addAttribute("authenticated", true);
-        return "login";
+            return "redirect:/";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Invalid username or password.");
+            return "login";
+        }
+
     }
 
     @GetMapping("/searchusers/sort:User.{attribute}/direction:{direction}")
@@ -111,7 +120,6 @@ public class WebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof User) {
-            model.addAttribute("authenticated", true);
             ArrayList<User> users = userService.getUsers();
 
             if ((!attribute.equals("username") && !attribute.equals("password")) || (!direction.equals("asc") && !direction.equals("desc"))) {
@@ -140,31 +148,29 @@ public class WebController {
             return "searchusers";
         }
 
-        return "searchusers";
+        return "redirect:/";
     }
 
     @GetMapping("/changepassword")
     public String changePassword(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof User) {
-            model.addAttribute("authenticated", true);
+            model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+            return "changepassword";
         }
-        model.addAttribute("passwordChangeForm", new PasswordChangeForm());
-        return "changepassword";
+
+        return "redirect:/";
     }
 
     @PostMapping("/changepassword")
     public String changePassword(@Valid PasswordChangeForm passwordChangeForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("authenticated", true);
             return "changepassword";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof User) {
             User user = (User) authentication.getPrincipal();
-            String hashedPassword = Hashing.sha256().hashString(passwordChangeForm.getPassword(), StandardCharsets.UTF_8).toString();
-            user.setPassword(hashedPassword);
-            userRepository.save(user);
+            userService.changePassword(user, passwordChangeForm.getPassword());
         }
         return "redirect:/";
     }

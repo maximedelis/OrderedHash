@@ -35,6 +35,12 @@ public class UserService implements UserDetailsService {
         userRepository.save(newUser);
     }
 
+    public void changePassword(User user, String newPassword) {
+        String hashedPassword = Hashing.sha256().hashString(newPassword, StandardCharsets.UTF_8).toString();
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+    }
+
     public ArrayList<User> getUsers() {
         return userRepository.findAll();
     }
