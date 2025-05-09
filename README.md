@@ -5,7 +5,7 @@ A smol Spring project with ordered hashes!!!
 ## How to?
 
 - Run project
-- Populate DB
+- Attack target password
 
 ## What's next
 
