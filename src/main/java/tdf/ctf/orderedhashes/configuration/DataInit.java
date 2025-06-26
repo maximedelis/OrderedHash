@@ -23,7 +23,7 @@ public class DataInit {
                 userService.saveUser(username, generateRandomPassword(12, 16));
                 System.out.println("Created user: " + username);
             }
-            String targetPassword = generateTargetPassword();
+            String targetPassword = generateEasyTargetPassword();
             System.out.println("Target password: " + targetPassword);
 
             userService.saveUser("target", targetPassword);
@@ -64,6 +64,17 @@ public class DataInit {
         password.append(specialChars.charAt(random.nextInt(specialChars.length())));
         password.append(digits.charAt(random.nextInt(digits.length())));
 
+        return password.toString();
+    }
+
+    private String generateEasyTargetPassword() {
+        String chars = "abcdefghijklmnopqrstuvwxyz";
+        Random random = new Random();
+
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
         return password.toString();
     }
 

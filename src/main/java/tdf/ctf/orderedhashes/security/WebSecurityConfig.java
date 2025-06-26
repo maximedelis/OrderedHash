@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("**")).permitAll()
                         .requestMatchers(toH2Console()).permitAll())
-                .csrf(csrf -> csrf .ignoringRequestMatchers(toH2Console()))
+                .csrf(csrf -> csrf .ignoringRequestMatchers("*")) // omg
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout((logout) -> logout.logoutSuccessUrl("/"));

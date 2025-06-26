@@ -9,7 +9,7 @@ public class LoginForm {
     @Pattern(regexp = "[ -~]*", message = "must contain printable ascii char")
     private String username;
 
-    @Size(min = 8, max = 64)
+    @Size(min = 3, max = 64)
     private String password;
 
     public String getPassword() {
